@@ -1,5 +1,5 @@
 import psycopg2
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -77,11 +77,33 @@ def obtener_proyectos_activos():
 
 @app.route('/proyecto/proyectos_gestor', methods=['GET'])
 def obtener_proyectos_gestor_id():
+
+    empleado_id = request.args.get('id')
+
     return ejecutar_sql(
-        'SELECT nombre, descripcion, fecha_creacion, fecha_inicio, cliente FROM public."Proyecto" WHERE fecha_finalizacion = NULL;'
+        f'SELECT * FROM public."Proyecto" p INNER JOIN public."GestoresProyecto" gp ON p.id = gp.proyecto where gp.gestor = {empleado_id};'
     )
 
 
+@app.route('/login', methods=['POST'])
+def gestor_login():
+    body_request = request.json
+    nombre = body_request["nombre"]
+    descripcion = body_request["descripcion"]
+    fecha_inicio = body_request["fecha_inicio"]
+    cliente = body_request["cliente"]
+    sql = f"""
+        INSERT INTO public."Proyecto" (nombre, descripcion, fecha_creacion, fecha_inicio, fecha_finalizacion, cliente)
+        VALUES (
+            '{nombre}',
+            '{descripcion}',
+            NOW(),
+            '{fecha_inicio}',
+            null,
+            {cliente},
+        );
+    """
+    return ejecutar_sql(sql)
 
 
 if __name__=='__main__':
