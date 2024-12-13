@@ -111,6 +111,26 @@ def gestor_login():
     """
     return ejecutar_sql(sql)
 
+@app.route('/login', methods=['POST'])
+def gestor_login():
+    body_request = request.json
+    nombre = body_request["nombre"]
+    descripcion = body_request["descripcion"]
+    fecha_inicio = body_request["fecha_inicio"]
+    cliente = body_request["cliente"]
+    sql = f"""
+        INSERT INTO public."Proyecto" (nombre, descripcion, fecha_creacion, fecha_inicio, fecha_finalizacion, cliente)
+        VALUES (
+            '{nombre}',
+            '{descripcion}',
+            NOW(),
+            '{fecha_inicio}',
+            null,
+            {cliente},
+        );
+    """
+    return ejecutar_sql(sql)
+
 
 if __name__=='__main__':
     app.run(debug=True)
