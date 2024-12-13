@@ -25,6 +25,12 @@ def ejecutar_sql(sql_text):
         # Consulta SQL (por ejemplo, selecciona todos los registros de una tabla llamada usuarios)
         cursor.execute(sql_text)
 
+        if "INSERT" in sql_text:
+            connection.commit()
+            cursor.close()
+            connection.close()
+            return jsonify({'msg': 'insertado'})
+
         # Obtener columnas para contruir claves del JSON
         columnas = [desc[0] for desc in cursor.description]
 
