@@ -1,6 +1,8 @@
 import psycopg2
 from flask import Flask, jsonify, request
 
+
+# Álvaro
 app = Flask(__name__)
 
 def ejecutar_sql(sql_text):
