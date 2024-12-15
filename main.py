@@ -90,43 +90,21 @@ def obtener_proyectos_gestor_id():
         f'SELECT * FROM public."Proyecto" p INNER JOIN public."GestoresProyecto" gp ON p.id = gp.proyecto where gp.gestor = {empleado_id};'
     )
 
+id integer NOT NULL,
+    usuario character varying(255) NOT NULL,
+    passwd text NOT NULL,
 
 @app.route('/login', methods=['POST'])
 def gestor_login():
     body_request = request.json
-    nombre = body_request["nombre"]
-    descripcion = body_request["descripcion"]
-    fecha_inicio = body_request["fecha_inicio"]
-    cliente = body_request["cliente"]
+    user = body_request["usuario"]
+    passwd = body_request["passwd"]
     sql = f"""
-        INSERT INTO public."Proyecto" (nombre, descripcion, fecha_creacion, fecha_inicio, fecha_finalizacion, cliente)
+        INSERT INTO public."Gestor" (id, usuario, passwd, empleado)
         VALUES (
-            '{nombre}',
-            '{descripcion}',
-            NOW(),
-            '{fecha_inicio}',
-            null,
-            {cliente},
-        );
-    """
-    return ejecutar_sql(sql)
-
-@app.route('/login', methods=['POST'])
-def gestor_login():
-    body_request = request.json
-    nombre = body_request["nombre"]
-    descripcion = body_request["descripcion"]
-    fecha_inicio = body_request["fecha_inicio"]
-    cliente = body_request["cliente"]
-    sql = f"""
-        INSERT INTO public."Proyecto" (nombre, descripcion, fecha_creacion, fecha_inicio, fecha_finalizacion, cliente)
-        VALUES (
-            '{nombre}',
-            '{descripcion}',
-            NOW(),
-            '{fecha_inicio}',
-            null,
-            {cliente},
+            '{user}',
+            '{passwd}',
+            1,
         );
     """
     return ejecutar_sql(sql)
