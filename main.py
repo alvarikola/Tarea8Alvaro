@@ -1,8 +1,21 @@
+from crypt import methods
+
 import psycopg2
 from flask import Flask, jsonify, request
 
 
 # Álvaro
+# Lista de métodos TODO
+# Login
+# Crear proyecto
+# Asignar gestor a proyecto
+# Asignar cliente a proyecto
+# Crear tareas a proyecto (debo estar asignado)
+# Asignar programador a proyecto
+# Asignar programadores a tareas
+# Obtener programadores
+# Obtener proyectos (activos o todos)
+# Obtener tareas de un proyecto (sin asignar o asignada)
 app = Flask(__name__)
 
 def ejecutar_sql(sql_text):
@@ -92,24 +105,47 @@ def obtener_proyectos_gestor_id():
         f'SELECT * FROM public."Proyecto" p INNER JOIN public."GestoresProyecto" gp ON p.id = gp.proyecto where gp.gestor = {empleado_id};'
     )
 
-id integer NOT NULL,
-    usuario character varying(255) NOT NULL,
-    passwd text NOT NULL,
-
 @app.route('/login', methods=['POST'])
 def gestor_login():
     body_request = request.json
     user = body_request["usuario"]
     passwd = body_request["passwd"]
+    is_logged = ejecutar_sql(
+        f"SELECT * FROM public.\"Gestor\" WHERE usuario = '{user}' AND passwd = '{passwd}';"
+    )
+
+    if len(is_logged) == 0:
+        return jsonify({"msg": "No mi rey así no"})
+
+    empleado = ejecutar_sql(
+        f"SELECT * FROM public.\"Empleado\" WHERE usuario = '{is_logged}' AND passwd = '{passwd}';"
+    )
+
+
+
+
+@app.route('/crear_proyecto', methods=['POST'])
+def crear_proyectos():
+    body_request = request.json
+    nombre = body_request["nombre"]
+    descripcion = body_request["descripcion"]
+    fecha_creacion = body_request["fecha_creacion"]
+    fecha_inicio = body_request["fecha_inicio"]
+    cliente = body_request["cliente"]
     sql = f"""
-        INSERT INTO public."Gestor" (id, usuario, passwd, empleado)
+        INSERT INTO public."Proyecto" (nombre, descripcion, fecha_creacion, fecha_inicio, cliente)
         VALUES (
-            '{user}',
-            '{passwd}',
-            1,
-        );
+            '{nombre}',
+            '{descripcion}',
+            '{fecha_creacion}',
+            '{fecha_inicio}',
+            {cliente}
+        )
     """
     return ejecutar_sql(sql)
+
+
+
 
 
 if __name__=='__main__':
