@@ -110,18 +110,25 @@ def gestor_login():
     body_request = request.json
     user = body_request["usuario"]
     passwd = body_request["passwd"]
+
     is_logged = ejecutar_sql(
         f"SELECT * FROM public.\"Gestor\" WHERE usuario = '{user}' AND passwd = '{passwd}';"
     )
 
-    if len(is_logged) == 0:
+    if len(is_logged.json) == 0:
         return jsonify({"msg": "No mi rey así no"})
-
     empleado = ejecutar_sql(
-        f"SELECT * FROM public.\"Empleado\" WHERE usuario = '{is_logged}' AND passwd = '{passwd}';"
+        f"SELECT * FROM public.\"Empleado\" WHERE id = '{is_logged.json[0]["empleado"]}';"
     )
 
-
+    return jsonify(
+        {
+            "id_empleado": empleado.json[0]["id"],
+            "id_gestor": is_logged.json[0]["id"],
+            "nombre": empleado.json[0]["nombre"],
+            "email": empleado.json[0]["email"]
+        }
+    )
 
 
 @app.route('/crear_proyecto', methods=['POST'])
