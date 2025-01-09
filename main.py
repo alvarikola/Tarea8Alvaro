@@ -152,6 +152,8 @@ def crear_proyectos():
     return ejecutar_sql(sql)
 
 
+@app.route('/asignar_gesto_proyecto', methods=['POST'])
+def asignar_gestor_proyecto():
 
 
 
