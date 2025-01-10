@@ -131,7 +131,7 @@ def gestor_login():
     )
 
 
-@app.route('/crear_proyecto', methods=['POST'])
+@app.route('/proyecto/crear_proyecto', methods=['POST'])
 def crear_proyectos():
     body_request = request.json
     nombre = body_request["nombre"]
@@ -152,8 +152,20 @@ def crear_proyectos():
     return ejecutar_sql(sql)
 
 
-@app.route('/asignar_gesto_proyecto', methods=['POST'])
+@app.route('/proyecto/asignar_gestor_proyecto', methods=['POST'])
 def asignar_gestor_proyecto():
+    body_request = request.json
+    gestor = body_request["gestor"]
+    proyecto = body_request["proyecto"]
+    sql = f"""
+            INSERT INTO public."GestoresProyecto" (gestor, proyecto, fecha_asignacion)
+            VALUES (
+                {gestor},
+                {proyecto},
+                NOW()
+            )
+        """
+    return ejecutar_sql(sql)
 
 
 
